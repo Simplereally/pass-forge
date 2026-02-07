@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Password Generator — Strong & Secure Passwords | PassForge</title>
+    <meta name="description" content="Generate strong, secure passwords instantly. Customizable length, characters, and strength analysis. Free, no signup required.">
+    <meta name="keywords" content="password generator, secure password, strong password generator, random password, password maker">
+    
+    <meta property="og:title" content="Free Password Generator | PassForge">
+    <meta property="og:description" content="Generate strong, secure passwords instantly. Free, no signup.">
+    <meta property="og:type" content="website">
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PassForge",
+        "description": "Free secure password generator with strength analysis",
+        "applicationCategory": "SecurityApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+    }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        :root { --pico-font-size: 16px; }
+        .container { max-width: 700px; margin: 0 auto; padding: 2rem 1rem; }
+        .hero { text-align: center; margin-bottom: 2rem; }
+        .password-display { 
+            font-family: monospace; 
+            font-size: 1.4rem; 
+            padding: 1rem; 
+            background: var(--pico-card-background-color);
+            border-radius: 8px;
+            word-break: break-all;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .strength-meter { height: 8px; border-radius: 4px; margin: 1rem 0; transition: all 0.3s; }
+        .strength-weak { background: #ff4444; width: 25%; }
+        .strength-fair { background: #ffaa00; width: 50%; }
+        .strength-good { background: #88cc00; width: 75%; }
+        .strength-strong { background: #00cc44; width: 100%; }
+        .strength-label { font-weight: bold; margin-bottom: 0.5rem; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .slider-container { margin: 1rem 0; }
+        .slider-container label { display: flex; justify-content: space-between; }
+        .checkbox-group label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+        .checkbox-group input { width: auto; margin: 0; }
+        .history { margin-top: 2rem; }
+        .history h3 { font-size: 1.1rem; }
+        .history-list { list-style: none; padding: 0; }
+        .history-list li { 
+            font-family: monospace; 
+            padding: 0.5rem; 
+            background: var(--pico-card-background-color);
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        footer { text-align: center; margin-top: 3rem; color: var(--pico-muted-color); }
+        .tips { background: var(--pico-card-background-color); padding: 1.5rem; border-radius: 8px; margin-top: 2rem; }
+        .tips h3 { margin-top: 0; }
+        .tips ul { margin-bottom: 0; }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <div class="hero">
+            <h1>🔐 PassForge</h1>
+            <p>Generate Strong, Secure Passwords</p>
+        </div>
+        
+        <div class="password-display" id="password">
+            Click Generate to create a password
+            <button class="copy-btn secondary" onclick="copyPassword()">📋 Copy</button>
+        </div>
+        
+        <div class="strength-label">Strength: <span id="strength-text">—</span></div>
+        <div class="strength-meter" id="strength-meter"></div>
+        
+        <div class="slider-container">
+            <label>
+                <span>Length</span>
+                <span id="length-value">16</span>
+            </label>
+            <input type="range" id="length" min="8" max="64" value="16">
+        </div>
+        
+        <div class="options-grid">
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="uppercase" checked> Uppercase (A-Z)</label>
+                <label><input type="checkbox" id="lowercase" checked> Lowercase (a-z)</label>
+            </div>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="numbers" checked> Numbers (0-9)</label>
+                <label><input type="checkbox" id="symbols" checked> Symbols (!@#$...)</label>
+            </div>
+        </div>
+        
+        <details style="margin: 1rem 0;">
+            <summary>Advanced Options</summary>
+            <div class="checkbox-group" style="margin-top: 1rem;">
+                <label><input type="checkbox" id="exclude-ambiguous"> Exclude ambiguous (l, 1, I, O, 0)</label>
+                <label><input type="checkbox" id="exclude-similar"> Exclude similar (i, l, 1, L, o, 0, O)</label>
+            </div>
+            <label style="margin-top: 1rem;">Custom symbols
+                <input type="text" id="custom-symbols" value="!@#$%^&*()_+-=[]{}|;:,.<>?">
+            </label>
+        </details>
+        
+        <button onclick="generatePassword()" style="width: 100%;">🔄 Generate New Password</button>
+        
+        <div class="history" id="history-section" style="display: none;">
+            <h3>Recent Passwords</h3>
+            <ul class="history-list" id="history-list"></ul>
+            <button class="secondary" onclick="clearHistory()" style="font-size: 0.9rem;">Clear History</button>
+        </div>
+        
+        <div class="tips">
+            <h3>🛡️ Password Security Tips</h3>
+            <ul>
+                <li><strong>Never reuse passwords</strong> — each account should have a unique password</li>
+                <li><strong>Use a password manager</strong> — don't try to memorize complex passwords</li>
+                <li><strong>Enable 2FA</strong> — two-factor authentication adds an extra layer of security</li>
+                <li><strong>16+ characters</strong> — longer passwords are exponentially harder to crack</li>
+                <li><strong>Check for breaches</strong> — use haveibeenpwned.com to check if your email was leaked</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>Built with ❤️ by <a href="https://github.com/Simplereally">Simplereally</a></p>
+            <p>Part of the <a href="https://simplereally.github.io/invoice-forge/">Forge</a> tool collection</p>
+        </footer>
+    </main>
+    
+    <script>
+        const passwordEl = document.getElementById('password');
+        const lengthSlider = document.getElementById('length');
+        const lengthValue = document.getElementById('length-value');
+        const historyList = document.getElementById('history-list');
+        const historySection = document.getElementById('history-section');
+        
+        let history = JSON.parse(localStorage.getItem('passforge_history') || '[]');
+        updateHistoryDisplay();
+        
+        lengthSlider.addEventListener('input', () => {
+            lengthValue.textContent = lengthSlider.value;
+        });
+        
+        document.querySelectorAll('input').forEach(el => {
+            el.addEventListener('change', generatePassword);
+        });
+        
+        function generatePassword() {
+            const length = parseInt(lengthSlider.value);
+            const useUpper = document.getElementById('uppercase').checked;
+            const useLower = document.getElementById('lowercase').checked;
+            const useNumbers = document.getElementById('numbers').checked;
+            const useSymbols = document.getElementById('symbols').checked;
+            const excludeAmbiguous = document.getElementById('exclude-ambiguous').checked;
+            const excludeSimilar = document.getElementById('exclude-similar').checked;
+            const customSymbols = document.getElementById('custom-symbols').value;
+            
+            let chars = '';
+            if (useUpper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            if (useLower) chars += 'abcdefghijklmnopqrstuvwxyz';
+            if (useNumbers) chars += '0123456789';
+            if (useSymbols) chars += customSymbols;
+            
+            if (excludeAmbiguous) {
+                chars = chars.replace(/[l1IO0]/g, '');
+            }
+            if (excludeSimilar) {
+                chars = chars.replace(/[il1LIoO0]/g, '');
+            }
+            
+            if (!chars) {
+                passwordEl.innerHTML = 'Select at least one character type<button class="copy-btn secondary" onclick="copyPassword()">📋 Copy</button>';
+                return;
+            }
+            
+            let password = '';
+            const array = new Uint32Array(length);
+            crypto.getRandomValues(array);
+            for (let i = 0; i < length; i++) {
+                password += chars[array[i] % chars.length];
+            }
+            
+            passwordEl.innerHTML = password + '<button class="copy-btn secondary" onclick="copyPassword()">📋 Copy</button>';
+            
+            updateStrength(password, useUpper, useLower, useNumbers, useSymbols);
+            addToHistory(password);
+        }
+        
+        function updateStrength(password, upper, lower, numbers, symbols) {
+            const meter = document.getElementById('strength-meter');
+            const text = document.getElementById('strength-text');
+            
+            let score = 0;
+            if (password.length >= 8) score++;
+            if (password.length >= 12) score++;
+            if (password.length >= 16) score++;
+            if (password.length >= 24) score++;
+            if (upper) score++;
+            if (lower) score++;
+            if (numbers) score++;
+            if (symbols) score++;
+            
+            // Check for patterns
+            if (!/(.)\1{2,}/.test(password)) score++; // No repeated chars
+            if (!/^[a-z]+$/i.test(password)) score++; // Not just letters
+            
+            let strength, className;
+            if (score <= 3) { strength = 'Weak'; className = 'strength-weak'; }
+            else if (score <= 5) { strength = 'Fair'; className = 'strength-fair'; }
+            else if (score <= 7) { strength = 'Good'; className = 'strength-good'; }
+            else { strength = 'Strong'; className = 'strength-strong'; }
+            
+            text.textContent = strength;
+            meter.className = 'strength-meter ' + className;
+        }
+        
+        function copyPassword() {
+            const password = passwordEl.textContent.replace('📋 Copy', '').trim();
+            if (password && !password.includes('Select') && !password.includes('Click')) {
+                navigator.clipboard.writeText(password);
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => btn.textContent = '📋 Copy', 1500);
+            }
+        }
+        
+        function addToHistory(password) {
+            history.unshift(password);
+            if (history.length > 5) history.pop();
+            localStorage.setItem('passforge_history', JSON.stringify(history));
+            updateHistoryDisplay();
+        }
+        
+        function updateHistoryDisplay() {
+            if (history.length === 0) {
+                historySection.style.display = 'none';
+                return;
+            }
+            historySection.style.display = 'block';
+            historyList.innerHTML = history.map(p => 
+                `<li><span>${p}</span><button class="secondary" onclick="navigator.clipboard.writeText('${p}');this.textContent='✅'" style="padding: 0.3rem 0.5rem; font-size: 0.8rem;">Copy</button></li>`
+            ).join('');
+        }
+        
+        function clearHistory() {
+            history = [];
+            localStorage.removeItem('passforge_history');
+            updateHistoryDisplay();
+        }
+        
+        // Generate initial password
+        generatePassword();
+    </script>
+</body>
+</html>
