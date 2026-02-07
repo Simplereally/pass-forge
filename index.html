@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Password Generator — Strong & Secure Passwords | PassForge</title>
+    <title>PassForge — Free Secure Password Generator</title>
     <meta name="description" content="Generate strong, secure passwords instantly. Customizable length, characters, and strength analysis. Free, no signup required.">
     <meta name="keywords" content="password generator, secure password, strong password generator, random password, password maker">
     
-    <meta property="og:title" content="Free Password Generator | PassForge">
+    <meta property="og:title" content="PassForge — Free Secure Password Generator">
     <meta property="og:description" content="Generate strong, secure passwords instantly. Free, no signup.">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://simplereally.github.io/pass-forge/">
     
     <script type="application/ld+json">
     {
@@ -23,110 +24,730 @@
     }
     </script>
     
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --pico-font-size: 16px; }
-        .container { max-width: 700px; margin: 0 auto; padding: 2rem 1rem; }
-        .hero { text-align: center; margin-bottom: 2rem; }
-        .password-display { 
-            font-family: monospace; 
-            font-size: 1.4rem; 
-            padding: 1rem; 
-            background: var(--pico-card-background-color);
-            border-radius: 8px;
-            word-break: break-all;
-            margin-bottom: 1rem;
-            position: relative;
+        /* ═══════════════════════════════════════════════════════════════
+           FORGE DESIGN SYSTEM — Industrial Dark with Molten Accents
+           ═══════════════════════════════════════════════════════════════ */
+        
+        :root {
+            --forge-void: #0a0a0b;
+            --forge-charcoal: #141417;
+            --forge-gunmetal: #1c1c21;
+            --forge-steel: #2a2a32;
+            --forge-iron: #4a4a55;
+            --forge-silver: #8b8b99;
+            --forge-chrome: #c4c4d4;
+            --forge-white: #f0f0f5;
+            
+            --forge-ember: #ff6b35;
+            --forge-flame: #ff8c42;
+            --forge-spark: #ffb366;
+            --forge-heat: #ef4444;
+            --forge-glow: rgba(255, 107, 53, 0.12);
+            --forge-success: #22c55e;
+            
+            --font-display: 'Chakra Petch', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            
+            --transition-fast: 150ms ease;
+            --transition-normal: 250ms ease;
         }
-        .copy-btn {
-            position: absolute;
-            right: 0.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            padding: 0.5rem;
-            font-size: 0.9rem;
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-body);
+            background: var(--forge-void);
+            color: var(--forge-chrome);
+            line-height: 1.6;
+            min-height: 100vh;
         }
-        .strength-meter { height: 8px; border-radius: 4px; margin: 1rem 0; transition: all 0.3s; }
-        .strength-weak { background: #ff4444; width: 25%; }
-        .strength-fair { background: #ffaa00; width: 50%; }
-        .strength-good { background: #88cc00; width: 75%; }
-        .strength-strong { background: #00cc44; width: 100%; }
-        .strength-label { font-weight: bold; margin-bottom: 0.5rem; }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .slider-container { margin: 1rem 0; }
-        .slider-container label { display: flex; justify-content: space-between; }
-        .checkbox-group label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
-        .checkbox-group input { width: auto; margin: 0; }
-        .history { margin-top: 2rem; }
-        .history h3 { font-size: 1.1rem; }
-        .history-list { list-style: none; padding: 0; }
-        .history-list li { 
-            font-family: monospace; 
-            padding: 0.5rem; 
-            background: var(--pico-card-background-color);
-            margin-bottom: 0.5rem;
-            border-radius: 4px;
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* ═══════════════ NAVIGATION ═══════════════ */
+        
+        .forge-nav {
+            background: linear-gradient(180deg, var(--forge-charcoal) 0%, transparent 100%);
+            padding: var(--space-md) var(--space-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+        
+        .forge-nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        footer { text-align: center; margin-top: 3rem; color: var(--pico-muted-color); }
-        .tips { background: var(--pico-card-background-color); padding: 1.5rem; border-radius: 8px; margin-top: 2rem; }
-        .tips h3 { margin-top: 0; }
-        .tips ul { margin-bottom: 0; }
+        
+        .forge-logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--forge-white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            letter-spacing: 0.5px;
+        }
+        
+        .forge-logo .icon {
+            font-size: 1.5rem;
+            filter: drop-shadow(0 0 8px var(--forge-ember));
+        }
+        
+        .forge-nav-links {
+            display: flex;
+            gap: var(--space-xs);
+        }
+        
+        .forge-nav-links a {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--forge-silver);
+            text-decoration: none;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        .forge-nav-links a:hover { color: var(--forge-ember); background: var(--forge-glow); }
+        .forge-nav-links a.active { color: var(--forge-ember); }
+        
+        /* ═══════════════ HEADER ═══════════════ */
+        
+        .forge-header {
+            text-align: center;
+            padding: var(--space-2xl) var(--space-lg);
+            position: relative;
+        }
+        
+        .forge-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            background: radial-gradient(ellipse at center, var(--forge-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .forge-header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            color: var(--forge-white);
+            margin-bottom: var(--space-sm);
+            letter-spacing: 1px;
+            position: relative;
+        }
+        
+        .forge-header h1 .accent { color: var(--forge-ember); }
+        
+        .forge-header p {
+            font-size: 1.1rem;
+            color: var(--forge-silver);
+            position: relative;
+        }
+        
+        /* ═══════════════ MAIN ═══════════════ */
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 var(--space-lg) var(--space-2xl);
+        }
+        
+        .forge-card {
+            background: var(--forge-charcoal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        
+        .forge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--forge-ember), transparent);
+            opacity: 0.5;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ═══════════════ PASSWORD DISPLAY ═══════════════ */
+        
+        .password-display {
+            font-family: var(--font-mono);
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--forge-white);
+            background: var(--forge-gunmetal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            word-break: break-all;
+            margin-bottom: var(--space-lg);
+            position: relative;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .password-display .password-text {
+            flex: 1;
+            padding-right: 80px;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            right: var(--space-md);
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--forge-steel);
+            color: var(--forge-chrome);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .copy-btn:hover {
+            background: var(--forge-ember);
+            color: var(--forge-void);
+        }
+        
+        .copy-btn.copied {
+            background: var(--forge-success);
+            color: var(--forge-void);
+        }
+        
+        /* ═══════════════ STRENGTH METER ═══════════════ */
+        
+        .strength-section {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .strength-label {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--forge-silver);
+            margin-bottom: var(--space-sm);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .strength-label .value {
+            font-weight: 700;
+        }
+        
+        .strength-meter {
+            height: 8px;
+            background: var(--forge-gunmetal);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .strength-meter-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-weak { background: var(--forge-heat); width: 25%; }
+        .strength-fair { background: var(--forge-spark); width: 50%; }
+        .strength-good { background: var(--forge-flame); width: 75%; }
+        .strength-strong { background: var(--forge-success); width: 100%; }
+        
+        /* ═══════════════ SLIDER ═══════════════ */
+        
+        .slider-container {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .slider-label {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--forge-silver);
+            margin-bottom: var(--space-sm);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .slider-label .value {
+            color: var(--forge-ember);
+            font-weight: 700;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            background: var(--forge-gunmetal);
+            border-radius: 4px;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--forge-ember) 0%, var(--forge-flame) 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.4);
+            transition: var(--transition-fast);
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--forge-ember) 0%, var(--forge-flame) 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 10px rgba(255, 107, 53, 0.4);
+        }
+        
+        /* ═══════════════ CHECKBOXES ═══════════════ */
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+        
+        @media (max-width: 500px) {
+            .options-grid { grid-template-columns: 1fr; }
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            cursor: pointer;
+            font-size: 0.95rem;
+            padding: var(--space-sm);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+        }
+        
+        .checkbox-group label:hover {
+            background: var(--forge-gunmetal);
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--forge-ember);
+            cursor: pointer;
+        }
+        
+        /* ═══════════════ DETAILS/SUMMARY ═══════════════ */
+        
+        details {
+            background: var(--forge-gunmetal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--space-lg);
+        }
+        
+        summary {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--forge-silver);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: var(--space-sm) var(--space-md);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        summary:hover { color: var(--forge-ember); }
+        
+        details[open] summary {
+            border-bottom: 1px solid var(--forge-steel);
+        }
+        
+        details > div {
+            padding: var(--space-md);
+        }
+        
+        details input[type="text"] {
+            width: 100%;
+            padding: var(--space-sm) var(--space-md);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--forge-white);
+            background: var(--forge-charcoal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-sm);
+            outline: none;
+            transition: var(--transition-fast);
+            margin-top: var(--space-sm);
+        }
+        
+        details input:focus {
+            border-color: var(--forge-ember);
+            box-shadow: 0 0 0 3px var(--forge-glow);
+        }
+        
+        details label {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--forge-silver);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+        }
+        
+        /* ═══════════════ BUTTONS ═══════════════ */
+        
+        .btn {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: var(--space-md) var(--space-xl);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-sm);
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--forge-ember) 0%, var(--forge-flame) 100%);
+            color: var(--forge-void);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--forge-gunmetal);
+            color: var(--forge-chrome);
+            border: 1px solid var(--forge-steel);
+            font-size: 0.8rem;
+            padding: var(--space-sm) var(--space-md);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--forge-steel);
+        }
+        
+        /* ═══════════════ HISTORY ═══════════════ */
+        
+        .history {
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--forge-steel);
+        }
+        
+        .history h3 {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--forge-ember);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: var(--space-md);
+        }
+        
+        .history-list {
+            list-style: none;
+        }
+        
+        .history-list li {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--forge-gunmetal);
+            margin-bottom: var(--space-sm);
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--forge-steel);
+        }
+        
+        .history-list li button {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            padding: var(--space-xs) var(--space-sm);
+            background: var(--forge-steel);
+            color: var(--forge-chrome);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .history-list li button:hover {
+            background: var(--forge-ember);
+            color: var(--forge-void);
+        }
+        
+        /* ═══════════════ TIPS ═══════════════ */
+        
+        .tips {
+            background: var(--forge-gunmetal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+        }
+        
+        .tips h3 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--forge-white);
+            margin-bottom: var(--space-md);
+        }
+        
+        .tips ul {
+            list-style: none;
+        }
+        
+        .tips li {
+            padding: var(--space-sm) 0;
+            padding-left: var(--space-lg);
+            position: relative;
+            color: var(--forge-silver);
+            font-size: 0.9rem;
+        }
+        
+        .tips li::before {
+            content: '🔒';
+            position: absolute;
+            left: 0;
+            font-size: 0.8rem;
+        }
+        
+        .tips li strong {
+            color: var(--forge-chrome);
+        }
+        
+        /* ═══════════════ FOOTER ═══════════════ */
+        
+        .forge-footer {
+            background: var(--forge-charcoal);
+            border-top: 1px solid var(--forge-steel);
+            padding: var(--space-xl) var(--space-lg);
+            margin-top: var(--space-2xl);
+        }
+        
+        .forge-footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+        
+        .forge-footer-tools {
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .forge-footer-tools a {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            color: var(--forge-silver);
+            text-decoration: none;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .forge-footer-tools a:hover { color: var(--forge-ember); }
+        
+        .forge-footer-meta {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--forge-iron);
+        }
+        
+        .forge-footer-meta a {
+            color: var(--forge-ember);
+            text-decoration: none;
+        }
+        
+        .forge-footer-meta a:hover { text-decoration: underline; }
+        
+        /* ═══════════════ RESPONSIVE ═══════════════ */
+        
+        @media (max-width: 700px) {
+            .forge-nav-links a {
+                font-size: 0.7rem;
+                padding: var(--space-xs);
+            }
+            
+            .password-display {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
+    <nav class="forge-nav">
+        <div class="forge-nav-inner">
+            <a href="https://simplereally.github.io/invoice-forge/" class="forge-logo">
+                <span class="icon">🔥</span>
+                <span>FORGE</span>
+            </a>
+            <div class="forge-nav-links">
+                <a href="https://simplereally.github.io/invoice-forge/">Invoice</a>
+                <a href="https://simplereally.github.io/qr-forge/">QR</a>
+                <a href="https://simplereally.github.io/pass-forge/" class="active">Pass</a>
+                <a href="https://simplereally.github.io/color-forge/">Color</a>
+                <a href="https://simplereally.github.io/readme-forge/">Readme</a>
+            </div>
+        </div>
+    </nav>
+    
+    <header class="forge-header">
+        <h1>Pass<span class="accent">Forge</span></h1>
+        <p>Generate strong, secure passwords instantly</p>
+    </header>
+    
     <main class="container">
-        <div class="hero">
-            <h1>🔐 PassForge</h1>
-            <p>Generate Strong, Secure Passwords</p>
-        </div>
-        
-        <div class="password-display" id="password">
-            Click Generate to create a password
-            <button class="copy-btn secondary" onclick="copyPassword()">📋 Copy</button>
-        </div>
-        
-        <div class="strength-label">Strength: <span id="strength-text">—</span></div>
-        <div class="strength-meter" id="strength-meter"></div>
-        
-        <div class="slider-container">
-            <label>
-                <span>Length</span>
-                <span id="length-value">16</span>
-            </label>
-            <input type="range" id="length" min="8" max="64" value="16">
-        </div>
-        
-        <div class="options-grid">
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="uppercase" checked> Uppercase (A-Z)</label>
-                <label><input type="checkbox" id="lowercase" checked> Lowercase (a-z)</label>
+        <div class="forge-card">
+            <div class="password-display" id="password">
+                <span class="password-text">Click Generate to create a password</span>
+                <button class="copy-btn" onclick="copyPassword()">📋 Copy</button>
             </div>
-            <div class="checkbox-group">
-                <label><input type="checkbox" id="numbers" checked> Numbers (0-9)</label>
-                <label><input type="checkbox" id="symbols" checked> Symbols (!@#$...)</label>
+            
+            <div class="strength-section">
+                <div class="strength-label">
+                    <span>Strength</span>
+                    <span class="value" id="strength-text">—</span>
+                </div>
+                <div class="strength-meter">
+                    <div class="strength-meter-fill" id="strength-meter"></div>
+                </div>
             </div>
-        </div>
-        
-        <details style="margin: 1rem 0;">
-            <summary>Advanced Options</summary>
-            <div class="checkbox-group" style="margin-top: 1rem;">
-                <label><input type="checkbox" id="exclude-ambiguous"> Exclude ambiguous (l, 1, I, O, 0)</label>
-                <label><input type="checkbox" id="exclude-similar"> Exclude similar (i, l, 1, L, o, 0, O)</label>
+            
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Length</span>
+                    <span class="value" id="length-value">16</span>
+                </div>
+                <input type="range" id="length" min="8" max="64" value="16">
             </div>
-            <label style="margin-top: 1rem;">Custom symbols
-                <input type="text" id="custom-symbols" value="!@#$%^&*()_+-=[]{}|;:,.<>?">
-            </label>
-        </details>
-        
-        <button onclick="generatePassword()" style="width: 100%;">🔄 Generate New Password</button>
-        
-        <div class="history" id="history-section" style="display: none;">
-            <h3>Recent Passwords</h3>
-            <ul class="history-list" id="history-list"></ul>
-            <button class="secondary" onclick="clearHistory()" style="font-size: 0.9rem;">Clear History</button>
+            
+            <div class="options-grid">
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="uppercase" checked> Uppercase (A-Z)</label>
+                    <label><input type="checkbox" id="lowercase" checked> Lowercase (a-z)</label>
+                </div>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="numbers" checked> Numbers (0-9)</label>
+                    <label><input type="checkbox" id="symbols" checked> Symbols (!@#$...)</label>
+                </div>
+            </div>
+            
+            <details>
+                <summary>Advanced Options</summary>
+                <div>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="exclude-ambiguous"> Exclude ambiguous (l, 1, I, O, 0)</label>
+                        <label><input type="checkbox" id="exclude-similar"> Exclude similar (i, l, 1, L, o, 0, O)</label>
+                    </div>
+                    <label style="margin-top: var(--space-md);">Custom symbols
+                        <input type="text" id="custom-symbols" value="!@#$%^&*()_+-=[]{}|;:,.<>?">
+                    </label>
+                </div>
+            </details>
+            
+            <button class="btn btn-primary" onclick="generatePassword()">🔄 Generate New Password</button>
+            
+            <div class="history" id="history-section" style="display: none;">
+                <h3>Recent Passwords</h3>
+                <ul class="history-list" id="history-list"></ul>
+                <button class="btn btn-secondary" onclick="clearHistory()">Clear History</button>
+            </div>
         </div>
         
         <div class="tips">
@@ -139,12 +760,22 @@
                 <li><strong>Check for breaches</strong> — use haveibeenpwned.com to check if your email was leaked</li>
             </ul>
         </div>
-        
-        <footer>
-            <p>Built with ❤️ by <a href="https://github.com/Simplereally">Simplereally</a></p>
-            <p>Part of the <a href="https://simplereally.github.io/invoice-forge/">Forge</a> tool collection</p>
-        </footer>
     </main>
+    
+    <footer class="forge-footer">
+        <div class="forge-footer-inner">
+            <div class="forge-footer-tools">
+                <a href="https://simplereally.github.io/invoice-forge/">InvoiceForge</a>
+                <a href="https://simplereally.github.io/qr-forge/">QRForge</a>
+                <a href="https://simplereally.github.io/pass-forge/">PassForge</a>
+                <a href="https://simplereally.github.io/color-forge/">ColorForge</a>
+                <a href="https://simplereally.github.io/readme-forge/">ReadmeForge</a>
+            </div>
+            <div class="forge-footer-meta">
+                <p>Made with 🔥 by <a href="https://github.com/Simplereally">Simplereally</a></p>
+            </div>
+        </div>
+    </footer>
     
     <script>
         const passwordEl = document.getElementById('password');
@@ -188,7 +819,7 @@
             }
             
             if (!chars) {
-                passwordEl.innerHTML = 'Select at least one character type<button class="copy-btn secondary" onclick="copyPassword()">📋 Copy</button>';
+                passwordEl.querySelector('.password-text').textContent = 'Select at least one character type';
                 return;
             }
             
@@ -199,7 +830,7 @@
                 password += chars[array[i] % chars.length];
             }
             
-            passwordEl.innerHTML = password + '<button class="copy-btn secondary" onclick="copyPassword()">📋 Copy</button>';
+            passwordEl.querySelector('.password-text').textContent = password;
             
             updateStrength(password, useUpper, useLower, useNumbers, useSymbols);
             addToHistory(password);
@@ -230,16 +861,23 @@
             else { strength = 'Strong'; className = 'strength-strong'; }
             
             text.textContent = strength;
-            meter.className = 'strength-meter ' + className;
+            text.style.color = className === 'strength-strong' ? 'var(--forge-success)' : 
+                              className === 'strength-good' ? 'var(--forge-flame)' :
+                              className === 'strength-fair' ? 'var(--forge-spark)' : 'var(--forge-heat)';
+            meter.className = 'strength-meter-fill ' + className;
         }
         
         function copyPassword() {
-            const password = passwordEl.textContent.replace('📋 Copy', '').trim();
+            const password = passwordEl.querySelector('.password-text').textContent;
             if (password && !password.includes('Select') && !password.includes('Click')) {
                 navigator.clipboard.writeText(password);
                 const btn = document.querySelector('.copy-btn');
                 btn.textContent = '✅ Copied!';
-                setTimeout(() => btn.textContent = '📋 Copy', 1500);
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                    btn.classList.remove('copied');
+                }, 1500);
             }
         }
         
@@ -257,7 +895,7 @@
             }
             historySection.style.display = 'block';
             historyList.innerHTML = history.map(p => 
-                `<li><span>${p}</span><button class="secondary" onclick="navigator.clipboard.writeText('${p}');this.textContent='✅'" style="padding: 0.3rem 0.5rem; font-size: 0.8rem;">Copy</button></li>`
+                `<li><span>${p}</span><button onclick="navigator.clipboard.writeText('${p}');this.textContent='✅ Copied'">Copy</button></li>`
             ).join('');
         }
         
