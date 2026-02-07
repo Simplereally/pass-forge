@@ -513,6 +513,129 @@
             background: var(--forge-steel);
         }
         
+        /* ═══════════════ PRO SECTION ═══════════════ */
+        
+        .pro-section {
+            background: var(--forge-gunmetal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-top: var(--space-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pro-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--forge-ember), var(--forge-flame), var(--forge-spark));
+        }
+        
+        .pro-section h3 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--forge-white);
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .pro-badge {
+            background: linear-gradient(135deg, var(--forge-ember) 0%, var(--forge-flame) 100%);
+            color: var(--forge-void);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pro-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .pro-features-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        @media (max-width: 500px) {
+            .pro-features-list { grid-template-columns: 1fr; }
+        }
+        
+        .pro-feature {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm);
+            background: var(--forge-charcoal);
+            border: 1px solid var(--forge-steel);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            color: var(--forge-silver);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .pro-feature:hover {
+            border-color: var(--forge-ember);
+            color: var(--forge-chrome);
+        }
+        
+        .pro-feature .icon {
+            font-size: 1rem;
+        }
+        
+        .pro-cta {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .pro-price {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forge-ember);
+        }
+        
+        .pro-price span {
+            font-size: 0.85rem;
+            color: var(--forge-silver);
+            font-weight: 400;
+        }
+        
+        .pro-cta .btn-primary {
+            width: auto;
+            padding: var(--space-sm) var(--space-lg);
+            text-decoration: none;
+        }
+        
         /* ═══════════════ HISTORY ═══════════════ */
         
         .history {
@@ -602,6 +725,97 @@
         
         .tips li strong {
             color: var(--forge-chrome);
+        }
+        
+        /* ═══════════════ MODAL ═══════════════ */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 11, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--forge-charcoal);
+            border: 1px solid var(--forge-steel);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+        
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--forge-ember), var(--forge-flame));
+        }
+        
+        .modal-content h3 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            color: var(--forge-white);
+            margin: 0 0 var(--space-md);
+        }
+        
+        .modal-price {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--forge-ember);
+            margin: var(--space-md) 0;
+        }
+        
+        .modal-price span {
+            font-size: 1rem;
+            color: var(--forge-silver);
+            font-weight: 400;
+        }
+        
+        .modal-features {
+            list-style: none;
+            padding: 0;
+            margin: var(--space-md) 0;
+        }
+        
+        .modal-features li {
+            padding: var(--space-sm) 0;
+            color: var(--forge-chrome);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .modal-features li::before {
+            content: '✓';
+            color: var(--forge-success);
+            font-weight: bold;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+        
+        .modal-actions .btn {
+            flex: 1;
         }
         
         /* ═══════════════ FOOTER ═══════════════ */
@@ -743,6 +957,33 @@
             
             <button class="btn btn-primary" onclick="generatePassword()">🔄 Generate New Password</button>
             
+            <!-- Pro Section -->
+            <div class="pro-section">
+                <h3>🔐 Pro Features <span class="pro-badge">✨ PRO</span></h3>
+                <div class="pro-features-list">
+                    <div class="pro-feature" onclick="showProModal()">
+                        <span class="icon">🔑</span>
+                        <span>Passphrase Mode</span>
+                    </div>
+                    <div class="pro-feature" onclick="showProModal()">
+                        <span class="icon">🛡️</span>
+                        <span>Breach Checking</span>
+                    </div>
+                    <div class="pro-feature" onclick="showProModal()">
+                        <span class="icon">📋</span>
+                        <span>Export History</span>
+                    </div>
+                    <div class="pro-feature" onclick="showProModal()">
+                        <span class="icon">⚡</span>
+                        <span>Bulk Generation</span>
+                    </div>
+                </div>
+                <div class="pro-cta">
+                    <div class="pro-price">$1.99 <span>one-time</span></div>
+                    <a href="https://buy.stripe.com/00w5kw0KZcbl9qN9pr1gs02" class="btn btn-primary" target="_blank">Unlock Pro</a>
+                </div>
+            </div>
+            
             <div class="history" id="history-section" style="display: none;">
                 <h3>Recent Passwords</h3>
                 <ul class="history-list" id="history-list"></ul>
@@ -761,6 +1002,25 @@
             </ul>
         </div>
     </main>
+    
+    <!-- Pro Modal -->
+    <div class="modal" id="proModal">
+        <div class="modal-content">
+            <h3>🔐 PassForge Pro</h3>
+            <div class="modal-price">$1.99 <span>one-time</span></div>
+            <ul class="modal-features">
+                <li>Passphrase mode (memorable passwords)</li>
+                <li>Breach checking (haveibeenpwned)</li>
+                <li>Export password history</li>
+                <li>Bulk generation (up to 100)</li>
+                <li>Priority support</li>
+            </ul>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeProModal()">Maybe Later</button>
+                <a href="https://buy.stripe.com/00w5kw0KZcbl9qN9pr1gs02" class="btn btn-primary" style="text-decoration:none;text-align:center;" target="_blank">Upgrade — $1.99</a>
+            </div>
+        </div>
+    </div>
     
     <footer class="forge-footer">
         <div class="forge-footer-inner">
@@ -904,6 +1164,21 @@
             localStorage.removeItem('passforge_history');
             updateHistoryDisplay();
         }
+        
+        function showProModal() {
+            document.getElementById('proModal').classList.add('active');
+        }
+        
+        function closeProModal() {
+            document.getElementById('proModal').classList.remove('active');
+        }
+        
+        // Close modal on outside click
+        document.getElementById('proModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('proModal')) {
+                closeProModal();
+            }
+        });
         
         // Generate initial password
         generatePassword();
