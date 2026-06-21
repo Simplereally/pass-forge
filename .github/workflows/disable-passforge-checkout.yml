@@ -1,5 +1,6 @@
 name: Disable PassForge checkout
 
+# Touching this workflow triggers it after creation.
 on:
   push:
     paths:
